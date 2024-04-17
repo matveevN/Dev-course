@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone repository') {
+            steps {
+                git 'https://github.com/matveevN/Dev-course.git'
+            }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                script {
+                    docker.build('my-image')
+                }
+            }
+        }
+
+        stage('Push Docker image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry-url', 'credentials-id') {
+                        docker.image('my-image').push('latest')
+                    }
+                }
+            }
+        }
+    }
+}
